@@ -1,0 +1,12 @@
+{
+  "name": "nextbirthday",
+  "version": "0.1.0",
+  "description": "displays the upcoming birthday based on a json birthday database",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "",
+  "author": "Christian Schmitt-Ramming",
+  "license": "CC0-1.0"
+}

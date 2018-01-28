@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Needed in order to be able to enter special characters like 'ä' (umläute) directly in HTML -->
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+</head>
+<body>
+  <h1>The upcoming birthdays</h1>
+  <div id="showData"></div>
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+
+    function dateDiff( date1, date2 ) {
+      //Get 1 day in milliseconds
+      var one_day=1000*60*60*24;
+      // Convert both dates to milliseconds
+      var date1_ms = date1.getTime();
+      var date2_ms = date2.getTime();
+      // Calculate the difference in milliseconds
+      var difference_ms = date2_ms - date1_ms;
+      // Convert back to days and return
+      return Math.round(difference_ms/one_day);
+    }
+    function DiffBetweenNextBirthdayAndToday(birthdate){
+      var today = new Date();
+      var birthdayDate = new Date(birthdate.toString());
+      console.log(birthdayDate);
+      birthdayDate.setFullYear(today.getFullYear());
+      if (birthdayDate < today)
+        birthdayDate.setFullYear(today.getFullYear() + 1);
+      return dateDiff(today, birthdayDate);
+    }
+    function readDataFromFile(){
+      var fs = require('fs');
+      return JSON.parse(fs.readFileSync('database.json', 'utf8'));
+    }
+
+    var birthdays = readDataFromFile();
+    //Add an attribute "In" and calculate the next occurence of the birhtday
+    for (var i = 0; i < birthdays.length; i++) {
+      birthdays[i].In = DiffBetweenNextBirthdayAndToday(birthdays[i].Birthday);
+    }
+    // Sort the collection by next birthdays
+    birthdays.sort(function(a, b){return a.In - b.In})
+    // EXTRACT VALUE FOR HTML HEADER.
+    // ('Name', 'Birthday')
+    var col = [];
+    for (var i = 0; i < birthdays.length; i++) {
+        for (var key in birthdays[i]) {
+          console.log(key);
+            if (col.indexOf(key) === -1) {
+                col.push(key);
+            }
+        }
+    }
+    // CREATE DYNAMIC TABLE.
+    var table = document.createElement("table");
+    // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+    var tr = table.insertRow(-1);                   // TABLE ROW.
+    for (var i = 0; i < col.length; i++) {
+        var th = document.createElement("th");      // TABLE HEADER.
+        th.innerHTML = col[i];
+        tr.appendChild(th);
+    }
+
+    // ADD JSON DATA TO THE TABLE AS ROWS.
+    for (var i = 0; i < birthdays.length; i++) {
+        tr = table.insertRow(-1);
+        for (var j = 0; j < col.length; j++) {
+            var tabCell = tr.insertCell(-1);
+            tabCell.innerHTML = birthdays[i][col[j]];
+        }
+    }
+    // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+    var divContainer = document.getElementById("showData");
+    divContainer.innerHTML = "";
+    divContainer.appendChild(table);
+  </script>
+
+</body>
+</html>
