@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron ."
   },
-  "repository": "",
+  "repository": "https://github.com/flammkuchen/nextbirthday",
   "author": "Christian Schmitt-Ramming",
   "license": "CC0-1.0"
 }
