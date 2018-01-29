@@ -3,27 +3,34 @@
 <head>
   <!-- Needed in order to be able to enter special characters like 'ä' (umläute) directly in HTML -->
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<style>
-table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even) {
-    background-color: #dddddd;
-}
-</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-  <h1>The upcoming birthdays</h1>
-  <div id="showData"></div>
+  <div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+				<div class="table100">
+          <div id="showData"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // You can also require other files to run in this process
     require('./renderer.js')
@@ -73,6 +80,10 @@ tr:nth-child(even) {
     }
     // CREATE DYNAMIC TABLE.
     var table = document.createElement("table");
+    var caption = document.createElement("caption");
+    caption.style = "text-align:center;color:#FFFFFF";
+    caption.innerHTML = "List of next birthdays";
+    table.appendChild(caption);
     // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
     var tr = table.insertRow(-1);                   // TABLE ROW.
     for (var i = 0; i < col.length; i++) {
