@@ -37,14 +37,24 @@
 
     function dateDiff( date1, date2 ) {
       //Get 1 day in milliseconds
-      var one_day=1000*60*60*24;
+      var one_minute = 1000 * 60;
+      var one_hour = 60 * one_minute;
+      var one_day= 24 * one_hour;
       // Convert both dates to milliseconds
       var date1_ms = date1.getTime();
       var date2_ms = date2.getTime();
       // Calculate the difference in milliseconds
       var difference_ms = date2_ms - date1_ms;
+      var days = Math.floor(difference_ms/one_day);
+      var hours = Math.floor((difference_ms - days * one_day) / one_hour);
+      var minutes = Math.round((difference_ms - days * one_day - hours * one_hour) / one_minute);// round to the nearst minute
+      var timespann = {days:"3", hours:"4", minutes:"5", difference_ms:"6"};
+      timespann.days = days;
+      timespann.hours = hours;
+      timespann.minutes = minutes;
+      timespann.difference_ms = difference_ms;
       // Convert back to days and return
-      return Math.round(difference_ms/one_day);
+      return timespann;
     }
     function DiffBetweenNextBirthdayAndToday(birthdate){
       var today = new Date();
@@ -53,7 +63,11 @@
       birthdayDate.setFullYear(today.getFullYear());
       if (birthdayDate < today)
         birthdayDate.setFullYear(today.getFullYear() + 1);
-      return dateDiff(today, birthdayDate);
+      var timespann = dateDiff(today, birthdayDate);
+      var in_object = { timespann:"1", difference_ms:"2"};
+      in_object.timespann = timespann.days + "d " + timespann.hours + "h " + timespann.minutes + "m";
+      in_object.difference_ms = timespann.difference_ms;
+      return in_object;
     }
     function readDataFromFile(){
       var fs = require('fs');
@@ -63,17 +77,20 @@
     var birthdays = readDataFromFile();
     //Add an attribute "In" and calculate the next occurence of the birhtday
     for (var i = 0; i < birthdays.length; i++) {
-      birthdays[i].In = DiffBetweenNextBirthdayAndToday(birthdays[i].Birthday);
+      var timespann = DiffBetweenNextBirthdayAndToday(birthdays[i].Birthday)
+      birthdays[i].In = timespann.timespann;
+      birthdays[i].Difference = timespann.difference_ms; //needed for sorting
     }
+    var invisibleColumns = ["Difference"]; //put here columns that should not be visible
     // Sort the collection by next birthdays
-    birthdays.sort(function(a, b){return a.In - b.In})
+    birthdays.sort(function(a, b){return a.Difference - b.Difference})
     // EXTRACT VALUE FOR HTML HEADER.
     // ('Name', 'Birthday')
     var col = [];
     for (var i = 0; i < birthdays.length; i++) {
         for (var key in birthdays[i]) {
           console.log(key);
-            if (col.indexOf(key) === -1) {
+            if (col.indexOf(key) === -1 && invisibleColumns.indexOf(key) == -1) {
                 col.push(key);
             }
         }
